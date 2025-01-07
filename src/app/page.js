@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Layout from "../app/components/layout";
 
 export default async function Home() {
   const { Client } = require('@notionhq/client');
@@ -54,27 +55,41 @@ try{
 }
 
   return (
-    <div className="min-h-screen p-4">
-      <h1 className="absolute top-4 left-4 text-xl font-bold">
-        짭알못
-      </h1>
-      <ul className="mt-8">
-        {Array.from(memberTimeMap.entries()).map(([member, { totalTime, iconUrl }]) => (
-          <li key={member} className="mb-4 flex items-center">
-            {iconUrl && (
-              <img
-                src={iconUrl}
-                alt={`${member}의 아이콘`}
-                className="w-8 h-8 mr-4 rounded-full"
-              />
-            )}
-            <div>
-              <h2 className="text-lg font-semibold">{member}</h2>
-              <p className="text-sm text-gray-500">총 {Math.floor(totalTime)} 시간</p>
-            </div>
-          </li>
-        ))}
-      </ul>
-    </div>
+    <Layout>
+      <section className="text-gray-500 body-font">
+        <div className="container px-5 py-24 mx-auto">
+          <div className="flex flex-col text-center w-full mb-20">
+            <h1 className="sm:text-3xl text-2xl font-medium title-font mb-4 text-white">
+              짭알못이란?
+            </h1>
+            <p className="lg:w-2/3 mx-auto leading-relaxed text-base">
+              과거에 '금요일을 알차게보내는건 못참지'라는 금요일마다 자기계발을 하는 모임이 있었습니다.<br />
+              저희는 그 모임과 별개로 매주 목요일마다 자기계발 모임을 하였습니다.<br />
+              어느날 누군가 '짭알못이다!' 라고 외친 이후로 그렇게 불리게되었습니다...<br />
+              하지만 지금은 우리가 찐 ㅋ😎
+            </p>
+          </div>
+          <div className="flex flex-wrap -m-2">
+            {Array.from(memberTimeMap.entries()).map(([member, { totalTime, iconUrl }]) => (
+              <div key={member} className="p-2 lg:w-1/3 md:w-1/2 w-full">
+                <div className="h-full flex items-center border-gray-200 border p-4 rounded-lg">
+                  {iconUrl && (
+                    <img
+                      src={iconUrl}
+                      alt={`${member}의 아이콘`}
+                      className="w-12 h-12 mr-4 rounded-full"
+                    />
+                  )}
+                  <div className="flex-grow">
+                    <h2 className="text-white title-font font-medium">{member}</h2>
+                    <p className="text-gray-500">총 {Math.floor(totalTime)} 시간</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    </Layout>
   );
 }
