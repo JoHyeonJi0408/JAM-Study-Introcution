@@ -3,12 +3,12 @@ import Footer from "./footer"
 
 export default function Layout({ children }) {
   return (
-    <>
+    <div className="bg-primary">
       <Header />
-      <main className="container mx-auto p-4">
+      <div>
         {children}
-      </main>
+      </div>
       <Footer />
-    </>
+    </div>
   );
 }
