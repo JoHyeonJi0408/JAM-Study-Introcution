@@ -59,7 +59,7 @@ try{
       <section className="text-gray-500 body-font">
         <div className="container px-5 py-24 mx-auto">
           <div className="flex flex-col text-center w-full mb-20">
-            <h1 className="sm:text-3xl text-2xl font-medium title-font mb-4 text-white">
+            <h1 className="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">
               짭알못이란?
             </h1>
             <p className="lg:w-2/3 mx-auto leading-relaxed text-base">
@@ -81,7 +81,7 @@ try{
                     />
                   )}
                   <div className="flex-grow">
-                    <h2 className="text-white title-font font-medium">{member}</h2>
+                    <h2 className="text-gray-900 title-font font-medium">{member}</h2>
                     <p className="text-gray-500">총 {Math.floor(totalTime)} 시간</p>
                   </div>
                 </div>

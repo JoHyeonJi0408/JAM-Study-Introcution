@@ -5,3 +5,11 @@
 .bg-primary{
   @apply bg-white dark:bg-slate-800
 }
+
+h1, h2{
+  @apply text-gray-900 dark:text-white
+}
+
+a {
+  @apply text-gray-900 dark:text-white hover:text-gray-500 dark:hover:text-gray-500;
+}
