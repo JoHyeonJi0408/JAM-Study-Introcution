@@ -1,5 +1,3 @@
-'use client'
-
 import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 import "./globals.css";
@@ -16,9 +14,9 @@ const geistMono = Geist_Mono({
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html suppressHydrationWarning lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-primary`}>
-        <ThemeProvider attribute="class" defaultTheme="system" > {children} </ThemeProvider>
+        <ThemeProvider attribute="class"> {children} </ThemeProvider>
       </body>
     </html>
   );
