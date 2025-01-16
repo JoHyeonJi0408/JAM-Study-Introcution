@@ -29,8 +29,11 @@ export default async function Home() {
           const memberName = title.split(" ")[1] || "Unknown";
           const time = page.properties["시간"]?.number || 0;
           const state = page.properties["상태"]?.select?.name || "좋음";
+          const rollupDate = page.properties["날짜"]?.rollup?.array[0]?.date?.start || null;
+          const year = rollupDate ? new Date(rollupDate).getFullYear() : "Unknown";
+          const month = rollupDate ? new Date(rollupDate).getMonth() + 1 : "Unknown";
 
-          return { iconUrl, memberName, time, state };
+          return { iconUrl, memberName, time, state, year, month };
         }),
       ];
 
@@ -39,23 +42,39 @@ export default async function Home() {
     }
 
     allPages.forEach((page) => {
-      const { iconUrl, memberName, time, state } = page;
+      const { iconUrl, memberName, time, state, year, month } = page;
 
       if (!memberTimeMap.has(memberName)) {
         memberTimeMap.set(memberName, {
           totalTime: 0,
           iconUrl,
           stateCounts: { 좋음: 0, 보통: 0, 나쁨: 0 },
+          activityByMonth: {},
         });
       }
 
       const currentData = memberTimeMap.get(memberName);
+      const monthKey = `${year}년 ${String(month).padStart(2, "0")}월`;
+      const currentMonthActivity = currentData.activityByMonth[monthKey] || {
+        totalTime: 0,
+        count: 0,
+        stateCounts: { 좋음: 0, 보통: 0, 나쁨: 0 },
+      };
+
+      currentMonthActivity.totalTime += time;
+      currentMonthActivity.count += 1;
+      currentMonthActivity.stateCounts[state] = (currentMonthActivity.stateCounts[state] || 0) + 1;
+
       memberTimeMap.set(memberName, {
         ...currentData,
         totalTime: currentData.totalTime + time,
         stateCounts: {
           ...currentData.stateCounts,
           [state]: (currentData.stateCounts[state] || 0) + 1,
+        },
+        activityByMonth: {
+          ...currentData.activityByMonth,
+          [monthKey]: currentMonthActivity,
         },
       });
     });
@@ -67,6 +86,8 @@ export default async function Home() {
     memberName,
     ...data,
   }));
+
+  console.log(memberData);
 
   return (
     <Layout>

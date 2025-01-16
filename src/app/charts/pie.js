@@ -3,9 +3,9 @@ import { Pie } from "react-chartjs-2";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const PieChart = ({ memberName, stateCounts }) => {
+const PieChart = ({ stateCounts }) => {
     const counts = stateCounts || { 좋음: 0, 보통: 0, 나쁨: 0 };
-    const total = counts.좋음 + counts.보통 + counts.나쁨;
+    const total = counts.좋음 + counts.보통 + counts.나쁨 || 1;
 
     const data = {
         labels: ["좋음", "보통", "나쁨"],
@@ -34,8 +34,9 @@ const PieChart = ({ memberName, stateCounts }) => {
                 enabled: true,
                 callbacks: {
                     label: function (tooltipItem) {
+                        const label = tooltipItem.label || "";
                         const percentage = ((tooltipItem.raw / total) * 100).toFixed(2);
-                        return `${tooltipItem.label}: ${percentage}%`;
+                        return `${label}: ${percentage}%`;
                     },
                 },
             },

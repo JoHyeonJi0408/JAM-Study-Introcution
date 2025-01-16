@@ -2,11 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
-.bg-primary{
+.bg-primary {
   @apply bg-white dark:bg-slate-800
 }
 
-h1, h2{
+select {
+  @apply bg-white dark:bg-slate-800
+}
+
+h1, h2 {
   @apply text-gray-900 dark:text-white
 }
 
