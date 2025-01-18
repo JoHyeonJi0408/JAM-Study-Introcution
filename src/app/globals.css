@@ -10,7 +10,7 @@ select {
   @apply bg-white dark:bg-slate-800
 }
 
-h1, h2 {
+h1, h2, p {
   @apply text-gray-900 dark:text-white
 }
 

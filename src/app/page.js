@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Layout from "../app/components/layout";
+import Layout from "./components/layout";
 import MainClient from "./components/main-client";
 
 export default async function Home() {
@@ -21,9 +21,10 @@ export default async function Home() {
       const memberId = page.id;
       const memberName = page.properties["이름"]?.title[0]?.text?.content || "Unknown";
       const goal = page.properties["목표"]?.select?.name || "Unknown";
+      const position = page.properties["직책"]?.select?.name || "Unknown";
       const iconUrl = page.icon?.external?.url || null;
 
-      memberDataMap.set(memberId, { memberId, memberName, goal, iconUrl });
+      memberDataMap.set(memberId, { memberId, memberName, goal, position, iconUrl });
     });
   } catch (error) {
     console.error("Failed to fetch member data:", error);
@@ -126,6 +127,8 @@ export default async function Home() {
       return {
         memberId,
         memberName,
+        goal: member?.goal || "Unknown",
+        position: member?.position || "Unknown",
         ...data,
       };
     }
