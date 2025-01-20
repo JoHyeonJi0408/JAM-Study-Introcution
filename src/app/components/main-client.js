@@ -3,14 +3,98 @@
 import React, { useState, useEffect } from 'react';
 import PieChart from "../charts/pie";
 
+function getCurrentMonth() {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    return `${year}년 ${month}월`;
+}
+
+function MonthGrid({ selectedMonth, activityByDate }) {
+    const [days, setDays] = useState([]);
+    const [startDay, setStartDay] = useState(0);
+
+    useEffect(() => {
+        const [year, month] = selectedMonth.split("년 ").map((str) => str.replace("월", "").trim());
+        const totalDays = new Date(year, month, 0).getDate();
+        const firstDay = new Date(year, month - 1, 1).getDay();
+        const dayArray = Array.from({ length: totalDays }, (_, i) => i + 1);
+
+        setDays(dayArray);
+        setStartDay(firstDay);
+    }, [selectedMonth]);
+
+    return (
+        <div className="grid grid-cols-7 gap-1 text-center">
+            {Array.from({ length: startDay }, (_, i) => (
+                <div key={`empty-${i}`} className="w-6 h-6 flex items-center justify-center"></div>
+            ))}
+            {days.map((day) => {
+                const activity = activityByDate[day]?.state;
+
+                let emoji;
+
+                switch (activity) {
+                    case "좋음":
+                        emoji = "🟩";
+                        break;
+                    case "보통":
+                        emoji = "🟨";
+                        break;
+                    case "나쁨":
+                        emoji = "🟥";
+                        break;
+                    default:
+                        emoji = "⬜";
+                }
+
+                return (
+                    <div key={day} className="w-6 h-6 flex items-center justify-center">
+                        {emoji}
+                    </div>
+                );
+            })}
+        </div>
+    );
+}
+
+function MemberCard({ memberName, iconUrl, monthData, selectedMonth }) {
+    const { totalTime, count, stateCounts } = monthData;
+    const activityByDate = monthData.activityByDate;
+
+    return (
+        <div key={memberName} className="p-2 lg:w-1/3 md:w-1/2 w-full">
+            <div className="h-full flex flex-col items-center border-gray-200 border p-4 rounded-lg">
+                {iconUrl && (
+                    <img
+                        src={iconUrl}
+                        alt={`${memberName}의 아이콘`}
+                        className="w-16 h-16 mb-4 rounded-full"
+                    />
+                )}
+                <h2 className="text-gray-900 title-font font-medium mb-2">{memberName}</h2>
+                <p className="text-gray-500 mb-2">
+                    {count}일 동안 {Math.floor(totalTime)}시간
+                </p>
+                <div className="flex w-full space-x-4 items-start">
+                    <div className="w-1/2 h-40">
+                        <PieChart stateCounts={stateCounts} />
+                    </div>
+                    <div className="w-1/2">
+                        <MonthGrid
+                            selectedMonth={selectedMonth}
+                            activityByDate={activityByDate}
+                        />
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
+
 export default function MainClient({ memberData }) {
     const [data, setData] = useState(null);
-    const [selectedMonth, setSelectedMonth] = useState(() => {
-        const today = new Date();
-        const year = today.getFullYear();
-        const month = String(today.getMonth() + 1).padStart(2, "0");
-        return `${year}년 ${month}월`;
-    });
+    const [selectedMonth, setSelectedMonth] = useState(getCurrentMonth());
 
     useEffect(() => {
         if (memberData) {
@@ -57,32 +141,17 @@ export default function MainClient({ memberData }) {
                 </div>
                 <div className="flex flex-wrap -m-2">
                     {memberData
-                        .filter(({ activityByMonth }) => activityByMonth[selectedMonth])
                         .map(({ memberName, iconUrl, activityByMonth }) => {
                             const monthData = activityByMonth[selectedMonth];
-                            const totalTime = monthData?.totalTime || 0;
-                            const count = monthData?.count || 0;
-                            const stateCounts = monthData?.stateCounts || { 좋음: 0, 보통: 0, 나쁨: 0 };
-
+                            if (!monthData) return null;
                             return (
-                                <div key={memberName} className="p-2 lg:w-1/3 md:w-1/2 w-full">
-                                    <div className="h-full flex flex-col items-center border-gray-200 border p-4 rounded-lg">
-                                        {iconUrl && (
-                                            <img
-                                                src={iconUrl}
-                                                alt={`${memberName}의 아이콘`}
-                                                className="w-16 h-16 mb-4 rounded-full"
-                                            />
-                                        )}
-                                        <h2 className="text-gray-900 title-font font-medium mb-2">{memberName}</h2>
-                                        <p className="text-gray-500 mb-2">
-                                            {count}일 동안 {Math.floor(totalTime)}시간
-                                        </p>
-                                        <div className="w-full h-40">
-                                            <PieChart stateCounts={stateCounts} />
-                                        </div>
-                                    </div>
-                                </div>
+                                <MemberCard
+                                    key={memberName}
+                                    memberName={memberName}
+                                    iconUrl={iconUrl}
+                                    monthData={monthData}
+                                    selectedMonth={selectedMonth}
+                                />
                             );
                         })}
                 </div>
