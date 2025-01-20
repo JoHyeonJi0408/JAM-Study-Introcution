@@ -16,9 +16,15 @@ export default async function Home() {
       return response.results.map((page) => ({
         memberId: page.id,
         memberName: page.properties["이름"]?.title[0]?.text?.content || "Unknown",
+        realName: page.properties["본명"]?.rich_text[0]?.text?.content || "Unknown",
         goal: page.properties["목표"]?.select?.name || "Unknown",
         position: page.properties["직책"]?.select?.name || "Unknown",
+        firstDate: page.properties["첫 참여일"]?.date?.start || null,
+        portfolio: page.properties["포폴"]?.url || null,
+        gitHub: page.properties["깃헙"]?.url || null,
+        blog: page.properties["블로그"]?.url || null,
         iconUrl: page.icon?.external?.url || null,
+        introduction: page.properties["소개"]?.rich_text[0]?.text?.content || "None",
       }));
     } catch (error) {
       console.error("Failed to fetch member data:", error);
@@ -43,7 +49,7 @@ export default async function Home() {
           ...response.results.map((page) => ({
             memberId: page.properties["멤버 DB"]?.relation[0]?.id || null,
             time: page.properties["시간"]?.number || 0,
-            state: page.properties["상태"]?.select?.name || "좋음",
+            state: page.properties["상태"]?.select?.name || "None",
             rollupDate: page.properties["날짜"]?.rollup?.array[0]?.date?.start || null,
           })),
         ];

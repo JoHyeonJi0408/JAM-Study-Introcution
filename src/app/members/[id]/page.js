@@ -36,18 +36,55 @@ export default function MemberPage() {
                                 <div className="w-12 h-1 bg-yellow-500 rounded mt-2 mb-4"></div>
                                 <p className="text-gray-900">{member.goal}</p>
                                 <p className="text-gray-900">{member.position}</p>
+                                <p className="text-gray-900">{member.firstDate}부터</p>
                                 <p className="text-gray-900">총 {Math.floor(member.totalTime)}시간</p>
                             </div>
                         </div>
                         <div className="sm:w-2/3 sm:pl-8 sm:py-8 sm:border-l border-gray-200 sm:border-t-0 border-t mt-4 pt-4 sm:mt-0 text-center sm:text-left">
-                            <h2 className="text-xl font-semibold mt-4">소제목</h2>
-                            <p className="text-gray-900">정보 1</p>
-                            <h2 className="text-xl font-semibold mt-4">소제목</h2>
-                            <p className="text-gray-900">정보 2</p>
-                            <h2 className="text-xl font-semibold mt-4">소제목</h2>
-                            <p className="text-gray-900">정보 3</p>
-                            <h2 className="text-xl font-semibold mt-4">소제목</h2>
-                            <p className="text-gray-900">정보 4</p>
+                            <h2 className="text-xl font-semibold mt-4">{member.realName}</h2>
+                            <p className="text-gray-900">{member.introduction}</p>
+
+                            {member.portfolio && (
+                                <>
+                                    <h2 className="text-xl font-semibold mt-4">포폴</h2>
+                                    <a
+                                        href={member.portfolio}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-blue-500 underline"
+                                    >
+                                        {member.portfolio}
+                                    </a>
+                                </>
+                            )}
+
+                            {member.blog && (
+                                <>
+                                    <h2 className="text-xl font-semibold mt-4">블로그</h2>
+                                    <a
+                                        href={member.blog}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-blue-500 underline"
+                                    >
+                                        {member.blog}
+                                    </a>
+                                </>
+                            )}
+
+                            {member.gitHub && (
+                                <>
+                                    <h2 className="text-xl font-semibold mt-4">깃헙</h2>
+                                    <a
+                                        href={member.gitHub}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-blue-500 underline"
+                                    >
+                                        {member.gitHub}
+                                    </a>
+                                </>
+                            )}
                         </div>
                     </div>
                 </div>
