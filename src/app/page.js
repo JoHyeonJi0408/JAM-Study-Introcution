@@ -10,133 +10,106 @@ export default async function Home() {
   const memberDatabaseId = "6167860f2e3747cb98495bc70ec6563f";
   const activityDatabaseId = "2e10e0944c774ff69baebd6aadf57d21";
 
-  const memberDataMap = new Map();
-
-  try {
-    const memberResponse = await notion.databases.query({
-      database_id: memberDatabaseId,
-    });
-
-    memberResponse.results.forEach((page) => {
-      const memberId = page.id;
-      const memberName = page.properties["이름"]?.title[0]?.text?.content || "Unknown";
-      const goal = page.properties["목표"]?.select?.name || "Unknown";
-      const position = page.properties["직책"]?.select?.name || "Unknown";
-      const iconUrl = page.icon?.external?.url || null;
-
-      memberDataMap.set(memberId, { memberId, memberName, goal, position, iconUrl });
-    });
-  } catch (error) {
-    console.error("Failed to fetch member data:", error);
-  }
-
-  let allActivityPages = [];
-  let hasMore = true;
-  let nextCursor = null;
-
-  try {
-    while (hasMore) {
-      const activityResponse = await notion.databases.query({
-        database_id: activityDatabaseId,
-        start_cursor: nextCursor || undefined,
-      });
-
-      allActivityPages = [
-        ...allActivityPages,
-        ...activityResponse.results.map((page) => {
-          const memberId = page.properties["멤버 DB"]?.relation[0]?.id || null;
-          const time = page.properties["시간"]?.number || 0;
-          const state = page.properties["상태"]?.select?.name || "좋음";
-          const rollupDate = page.properties["날짜"]?.rollup?.array[0]?.date?.start || null;
-          const year = rollupDate ? new Date(rollupDate).getFullYear() : "Unknown";
-          const month = rollupDate ? new Date(rollupDate).getMonth() + 1 : "Unknown";
-
-          return { memberId, time, state, year, month };
-        }),
-      ];
-
-      hasMore = activityResponse.has_more;
-      nextCursor = activityResponse.next_cursor;
+  const fetchMemberData = async () => {
+    try {
+      const response = await notion.databases.query({ database_id: memberDatabaseId });
+      return response.results.map((page) => ({
+        memberId: page.id,
+        memberName: page.properties["이름"]?.title[0]?.text?.content || "Unknown",
+        goal: page.properties["목표"]?.select?.name || "Unknown",
+        position: page.properties["직책"]?.select?.name || "Unknown",
+        iconUrl: page.icon?.external?.url || null,
+      }));
+    } catch (error) {
+      console.error("Failed to fetch member data:", error);
+      return [];
     }
-  } catch (error) {
-    console.error("Failed to fetch activity data:", error);
-  }
+  };
 
-  const memberActivitySummary = new Map();
+  const fetchActivityData = async () => {
+    let activities = [];
+    let hasMore = true;
+    let nextCursor = null;
 
-  allActivityPages.forEach((activity) => {
-    const { memberId, time, state, year, month } = activity;
+    try {
+      while (hasMore) {
+        const response = await notion.databases.query({
+          database_id: activityDatabaseId,
+          start_cursor: nextCursor || undefined,
+        });
 
-    if (!memberActivitySummary[memberId]) {
-      memberActivitySummary[memberId] = {
-        activityByMonth: {},
+        activities = [
+          ...activities,
+          ...response.results.map((page) => ({
+            memberId: page.properties["멤버 DB"]?.relation[0]?.id || null,
+            time: page.properties["시간"]?.number || 0,
+            state: page.properties["상태"]?.select?.name || "좋음",
+            rollupDate: page.properties["날짜"]?.rollup?.array[0]?.date?.start || null,
+          })),
+        ];
+
+        hasMore = response.has_more;
+        nextCursor = response.next_cursor;
+      }
+    } catch (error) {
+      console.error("Failed to fetch activity data:", error);
+    }
+
+    return activities;
+  };
+
+  const processData = (members, activities) => {
+    const memberMap = Object.fromEntries(members.map((m) => [m.memberId, m]));
+    const activitySummary = {};
+
+    activities.forEach(({ memberId, time, state, rollupDate }) => {
+      if (!rollupDate || !memberMap[memberId]) return;
+
+      const date = new Date(rollupDate);
+      const year = date.getFullYear();
+      const month = date.getMonth() + 1;
+      const day = date.getDate();
+      const monthKey = `${year}년 ${String(month).padStart(2, "0")}월`;
+
+      if (!activitySummary[memberId]) {
+        activitySummary[memberId] = { activityByMonth: {}, totalTime: 0 };
+      }
+
+      const memberActivity = activitySummary[memberId];
+      if (!memberActivity.activityByMonth[monthKey]) {
+        memberActivity.activityByMonth[monthKey] = {
+          totalTime: 0,
+          count: 0,
+          stateCounts: { 좋음: 0, 보통: 0, 나쁨: 0 },
+          activityByDate: {},
+        };
+      }
+
+      const monthActivity = memberActivity.activityByMonth[monthKey];
+      monthActivity.totalTime += time;
+      monthActivity.count += 1;
+      monthActivity.stateCounts[state] = (monthActivity.stateCounts[state] || 0) + 1;
+      monthActivity.activityByDate[day] = {
+        time: (monthActivity.activityByDate[day]?.time || 0) + time,
+        state,
       };
-    }
 
-    const member = memberDataMap.get(memberId);
-
-    if (!member) return;
-
-    const memberName = member.memberName;
-
-    if (!memberActivitySummary.has(memberName)) {
-      memberActivitySummary.set(memberName, {
-        totalTime: 0,
-        iconUrl: member.iconUrl,
-        stateCounts: { 좋음: 0, 보통: 0, 나쁨: 0 },
-        activityByMonth: {},
-      });
-    }
-
-    const currentData = memberActivitySummary.get(memberName);
-    const monthKey = `${year}년 ${String(month).padStart(2, "0")}월`;
-
-    const currentMonthActivity = currentData.activityByMonth[monthKey] || {
-      totalTime: 0,
-      count: 0,
-      stateCounts: { 좋음: 0, 보통: 0, 나쁨: 0 },
-    };
-
-    currentMonthActivity.totalTime += time;
-    currentMonthActivity.count += 1;
-    currentMonthActivity.stateCounts[state] =
-      (currentMonthActivity.stateCounts[state] || 0) + 1;
-
-    memberActivitySummary.set(memberName, {
-      ...currentData,
-      totalTime: currentData.totalTime + time,
-      stateCounts: {
-        ...currentData.stateCounts,
-        [state]: (currentData.stateCounts[state] || 0) + 1,
-      },
-      activityByMonth: {
-        ...currentData.activityByMonth,
-        [monthKey]: currentMonthActivity,
-      },
+      memberActivity.totalTime += time;
     });
-  });
 
-  const memberData = Array.from(memberActivitySummary.entries()).map(
-    ([memberName, data]) => {
-      const member = Array.from(memberDataMap.values()).find(
-        (m) => m.memberName === memberName
-      );
+    return members.map((member) => ({
+      ...member,
+      ...activitySummary[member.memberId],
+    }));
+  };
 
-      const memberId = member?.memberId || null;
-
-      return {
-        memberId,
-        memberName,
-        goal: member?.goal || "Unknown",
-        position: member?.position || "Unknown",
-        ...data,
-      };
-    }
-  );
+  const memberData = await fetchMemberData();
+  const activityData = await fetchActivityData();
+  const processedData = processData(memberData, activityData);
 
   return (
-      <Layout memberData={memberData}>
-        <MainClient memberData={memberData} />
-      </Layout>
+    <Layout memberData={processedData}>
+      <MainClient memberData={processedData} />
+    </Layout>
   );
 }
