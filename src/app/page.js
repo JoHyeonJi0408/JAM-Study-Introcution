@@ -51,6 +51,7 @@ export default async function Home() {
             time: page.properties["시간"]?.number || 0,
             state: page.properties["상태"]?.select?.name || "None",
             rollupDate: page.properties["날짜"]?.rollup?.array[0]?.date?.start || null,
+            tags: page.properties["활동 유형"]?.multi_select.map((tag) => tag.name) || [],
           })),
         ];
 
@@ -68,7 +69,7 @@ export default async function Home() {
     const memberMap = Object.fromEntries(members.map((m) => [m.memberId, m]));
     const activitySummary = {};
 
-    activities.forEach(({ memberId, time, state, rollupDate }) => {
+    activities.forEach(({ memberId, time, state, rollupDate, tags }) => {
       if (!rollupDate || !memberMap[memberId]) return;
 
       const date = new Date(rollupDate);
@@ -78,7 +79,11 @@ export default async function Home() {
       const monthKey = `${year}년 ${String(month).padStart(2, "0")}월`;
 
       if (!activitySummary[memberId]) {
-        activitySummary[memberId] = { activityByMonth: {}, totalTime: 0 };
+        activitySummary[memberId] = { 
+          activityByMonth: {}, 
+          totalTime: 0,
+          tagCounts: {},
+        };
       }
 
       const memberActivity = activitySummary[memberId];
@@ -88,6 +93,7 @@ export default async function Home() {
           count: 0,
           stateCounts: { 좋음: 0, 보통: 0, 나쁨: 0 },
           activityByDate: {},
+          tagCounts: {},
         };
       }
 
@@ -99,6 +105,13 @@ export default async function Home() {
         time: (monthActivity.activityByDate[day]?.time || 0) + time,
         state,
       };
+
+      if (tags && tags.length > 0) {
+        tags.forEach((tag) => {
+          memberActivity.tagCounts[tag] = (memberActivity.tagCounts[tag] || 0) + 1;
+          monthActivity.tagCounts[tag] = (monthActivity.tagCounts[tag] || 0) + 1;
+        });
+      }
 
       memberActivity.totalTime += time;
     });
@@ -112,6 +125,10 @@ export default async function Home() {
   const memberData = await fetchMemberData();
   const activityData = await fetchActivityData();
   const processedData = processData(memberData, activityData);
+
+  //console.log(memberData);
+  //console.log(activityData);
+  console.log(processedData);
 
   return (
     <Layout memberData={processedData}>
