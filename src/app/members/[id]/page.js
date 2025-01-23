@@ -7,10 +7,12 @@ import { useParams } from "next/navigation";
 function MemberProfile({ member }) {
     return (
         <div className="sm:w-1/3 text-center sm:pr-8 sm:py-8">
-            <div className="w-40 h-40 rounded-full inline-flex items-center justify-center">
-                {member.iconUrl && (
-                    <img src={member.iconUrl} alt={`${member.memberName}의 아이콘`} />
-                )}
+            <div className="w-40 h-40 rounded-full inline-flex items-center justify-center bg-gray-200">
+                <img
+                    src={member.imageUrl || member.iconUrl}
+                    alt={`${member.memberName}의 이미지`}
+                    className="w-full h-full object-cover rounded-full"
+                />
             </div>
             <div className="flex flex-col items-center text-center justify-center">
                 <h2 className="font-medium title-font mt-4 text-gray-900 text-lg">{member.memberName}</h2>
@@ -127,7 +129,7 @@ function Tags({ tags = [] }) {
                         key={tag}
                         className={`text-sm font-medium px-3 py-1 rounded-full mr-2 mb-2 ${getColorClass(
                             tag
-                          )}`}
+                        )}`}
                     >
                         {tag}
                     </span>
@@ -139,7 +141,7 @@ function Tags({ tags = [] }) {
                         key={tag}
                         className={`text-sm font-medium px-3 py-1 rounded-full mr-2 mb-2 ${getColorClass2(
                             tag
-                          )}`}
+                        )}`}
                     >
                         {tag}
                     </span>
@@ -151,7 +153,7 @@ function Tags({ tags = [] }) {
                         key={tag}
                         className={`text-sm font-medium px-3 py-1 rounded-full mr-2 mb-2 ${getColorClass3(
                             tag
-                          )}`}
+                        )}`}
                     >
                         {tag}
                     </span>

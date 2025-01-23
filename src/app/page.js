@@ -24,6 +24,7 @@ export default async function Home() {
         gitHub: page.properties["깃헙"]?.url || null,
         blog: page.properties["블로그"]?.url || null,
         iconUrl: page.icon?.external?.url || null,
+        imageUrl: page.properties["이미지"]?.files[0]?.file?.url || null,
         introduction: page.properties["소개"]?.rich_text[0]?.text?.content || "None",
       }));
     } catch (error) {
@@ -125,10 +126,6 @@ export default async function Home() {
   const memberData = await fetchMemberData();
   const activityData = await fetchActivityData();
   const processedData = processData(memberData, activityData);
-
-  //console.log(memberData);
-  //console.log(activityData);
-  console.log(processedData);
 
   return (
     <Layout memberData={processedData}>

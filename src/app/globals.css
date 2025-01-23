@@ -17,3 +17,46 @@ h1, h2, p {
 a {
   @apply text-gray-900 dark:text-white hover:text-gray-500 dark:hover:text-gray-500;
 }
+
+/*
+slate-100: #f1f5f9
+slate-200: #e2e8f0
+slate-300: #cbd5e1
+slate-400: #94a3b8
+slate-500: #64748b
+slate-600: #475569
+slate-700: #334155
+slate-800: #1e293b
+slate-900: #0f172a
+*/
+
+/* 다크 모드의 react-calendar 스타일 */
+.dark .react-calendar {
+  background-color: #0f172a; /* 어두운 배경 */
+  color: #fff; /* 글자 색은 흰색 */
+}
+
+.dark .react-calendar__tile {
+  background-color: #1e293b; /* 각 날짜의 배경색 */
+  color: white; /* 날짜 글씨 색 */
+}
+
+.dark .react-calendar__tile:hover {
+  background-color: #0f172a; /* 날짜 hover 시 색상 */
+}
+
+.dark .react-calendar__month-view__days__day--weekend {
+  color: #FF7043; /* 주말은 다른 색상으로 */
+}
+
+/* 현재 날짜 스타일 */
+.dark .react-calendar__tile--now {
+  background-color: #FF7043;
+  color: #ffffff;
+}
+
+/* 선택된 날짜 스타일 */
+.dark .react-calendar__tile--active {
+  background-color: #FF8A65;
+  color: white;
+}
