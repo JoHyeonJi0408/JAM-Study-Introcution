@@ -15,8 +15,8 @@ function MemberProfile({ member }) {
                 />
             </div>
             <div className="flex flex-col items-center text-center justify-center">
-                <h2 className="font-medium title-font mt-4 text-gray-900 text-lg">{member.memberName}</h2>
-                <div className="w-12 h-1 bg-yellow-500 rounded mt-2 mb-4"></div>
+                <h2 className="font-medium title-font mt-4 text-gray-900 text-lg">{member.realName} {member.memberName}</h2>
+                <div className="w-20 h-1 bg-yellow-500 rounded mt-2 mb-4"></div>
                 <p className="text-gray-900">{member.goal}</p>
                 <p className="text-gray-900">{member.position}</p>
                 <p className="text-gray-900">{member.firstDate}부터</p>

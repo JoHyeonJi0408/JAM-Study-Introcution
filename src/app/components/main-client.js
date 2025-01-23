@@ -145,7 +145,7 @@ function MonthPicker({ selectedMonth, setSelectedMonth, uniqueMonths }) {
 
             {/* Calendar Popup */}
             {showCalendar && (
-                <div 
+                <div
                     className="absolute top-full mt-2 bg-white dark:bg-slate-800 border p-4 rounded shadow-lg z-50 {`react-calendar-wrapper ${theme === 'dark' ? 'dark' : ''}`}"
                     onClick={(e) => e.stopPropagation()} // Prevent event bubbling
                 >
@@ -175,9 +175,22 @@ function MonthPicker({ selectedMonth, setSelectedMonth, uniqueMonths }) {
     );
 }
 
-function MemberCard({ memberName, iconUrl, monthData, selectedMonth }) {
+function MemberCard({ memberName, realName, iconUrl, monthData, selectedMonth }) {
     const { totalTime, count, stateCounts } = monthData;
     const activityByDate = monthData.activityByDate;
+
+    const tagColors = {
+        개발: "bg-blue-100 text-blue-500",
+        취준: "bg-green-100 text-green-500",
+        디자인: "bg-yellow-100 text-yellow-500",
+        프로젝트: "bg-red-100 text-red-500",
+        공부: "bg-pink-100 text-pink-500",
+        자기계발: "bg-orange-100 text-orange-500",
+        기타: "bg-gray-100 text-gray-500",
+    };
+
+    const getColorClass = (tag) => tagColors[tag] || "bg-gray-200 text-gray-700";
+    const sortedTags = Object.entries(monthData.tagCounts).sort((a, b) => b[1] - a[1]);
 
     return (
         <div className="p-2 lg:w-1/3 md:w-1/2 w-full">
@@ -189,7 +202,19 @@ function MemberCard({ memberName, iconUrl, monthData, selectedMonth }) {
                         className="w-16 h-16 mb-4 rounded-full"
                     />
                 )}
-                <h2 className="text-gray-900 title-font font-medium mb-2">{memberName}</h2>
+                <h2 className="text-gray-900 title-font font-medium mb-2">{realName} {memberName}</h2>
+                <div className="flex flex-wrap mt-4">
+                    {sortedTags.map(([tag]) => (
+                        <span
+                            key={tag}
+                            className={`text-sm font-medium px-3 py-1 rounded-full mr-2 mb-2 ${getColorClass(
+                                tag
+                            )}`}
+                        >
+                            {tag}
+                        </span>
+                    ))}
+                </div>
                 <p className="text-gray-500 mb-2">
                     📅 {count}일 ⏰ {Math.floor(totalTime)}시간
                 </p>
@@ -251,13 +276,14 @@ export default function MainClient({ memberData }) {
                     />
                 </div>
                 <div className="flex flex-wrap -m-2">
-                    {data.map(({ memberName, iconUrl, activityByMonth }) => {
+                    {data.map(({ memberName, realName, iconUrl, activityByMonth }) => {
                         const monthData = activityByMonth[selectedMonth];
                         if (!monthData) return null;
                         return (
                             <MemberCard
                                 key={memberName}
                                 memberName={memberName}
+                                realName={realName}
                                 iconUrl={iconUrl}
                                 monthData={monthData}
                                 selectedMonth={selectedMonth}

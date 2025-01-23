@@ -8,19 +8,19 @@ const PieChart = ({ stateCounts }) => {
     const total = counts.좋음 + counts.보통 + counts.나쁨 || 1;
 
     const data = {
-        labels: ["좋음", "보통", "나쁨"],
+        labels: ["Min", "More", "Max"],
         datasets: [
             {
-                data: [counts.좋음, counts.보통, counts.나쁨],
+                data: [counts.나쁨, counts.보통, counts.좋음],
                 backgroundColor: [
-                    "rgba(75, 192, 192, 0.2)",
-                    "rgba(255, 205, 86, 0.2)",
-                    "rgba(255, 99, 132, 0.2)",
+                    "rgba(248, 113, 113, 0.3)",
+                    "rgba(250, 204, 21, 0.3)",
+                    "rgba(102, 187, 106, 0.3)",
                 ],
                 borderColor: [
-                    "rgba(75, 192, 192, 1)",
-                    "rgba(255, 205, 86, 1)",
-                    "rgba(255, 99, 132, 1)",
+                    "rgba(248, 113, 113, 1)",
+                    "rgba(250, 204, 21, 1)",
+                    "rgba(102, 187, 106, 1)",
                 ],
                 borderWidth: 1,
             },
@@ -29,14 +29,18 @@ const PieChart = ({ stateCounts }) => {
 
     const options = {
         plugins: {
-            legend: { position: "bottom" },
+            legend: { 
+                position: "bottom",
+                labels: {
+                    boxWidth : 12
+                }
+            },
             tooltip: {
                 enabled: true,
                 callbacks: {
                     label: function (tooltipItem) {
-                        const label = tooltipItem.label || "";
                         const percentage = ((tooltipItem.raw / total) * 100).toFixed(2);
-                        return `${label}: ${percentage}%`;
+                        return ` ${percentage}%`;
                     },
                 },
             },
