@@ -30,33 +30,52 @@ slate-800: #1e293b
 slate-900: #0f172a
 */
 
-/* 다크 모드의 react-calendar 스타일 */
+/* 다크 모드 react-calendar 스타일 */
 .dark .react-calendar {
-  background-color: #0f172a; /* 어두운 배경 */
-  color: #fff; /* 글자 색은 흰색 */
-}
-
-.dark .react-calendar__tile {
-  background-color: #1e293b; /* 각 날짜의 배경색 */
-  color: white; /* 날짜 글씨 색 */
+  background-color: #1e293b; /* 다크 모드 배경 */
+  color: #fff; /* 기본 글씨 색 */
 }
 
 .dark .react-calendar__tile:hover {
-  background-color: #0f172a; /* 날짜 hover 시 색상 */
+  background-color: #334155;
+  color: #fff;
 }
 
-.dark .react-calendar__month-view__days__day--weekend {
-  color: #FF7043; /* 주말은 다른 색상으로 */
+.dark .react-calendar__year-view .react-calendar__tile:hover,
+.dark .react-calendar__decade-view .react-calendar__tile:hover {
+  background-color: #334155; /* 월 hover 배경 */
+  color: #fff; /* 월 hover 텍스트 */
 }
 
-/* 현재 날짜 스타일 */
 .dark .react-calendar__tile--now {
-  background-color: #FF7043;
+  background-color: #ffae00;
   color: #ffffff;
 }
 
-/* 선택된 날짜 스타일 */
-.dark .react-calendar__tile--active {
-  background-color: #FF8A65;
-  color: white;
+.dark .react-calendar__tile:disabled {
+  background-color: #334155; /* 기본 배경색 */
+  color: #64748b; /* 비활성화된 텍스트 색상 */
+}
+
+.dark .react-calendar__tile:disabled:hover {
+  background-color: #334155; /* hover 시 배경색 */
+  color: #64748b; /* hover 시 텍스트 색상 */
+}
+
+.dark .react-calendar__navigation__arrow,
+.dark .react-calendar__navigation__label {
+  background-color: #1e293b; /* 버튼 기본 배경색 */
+  color: #ffffff;
+}
+
+.dark .react-calendar__navigation__arrow:hover,
+.dark .react-calendar__navigation__label:hover {
+  background-color: #334155 !important;/* hover 시 배경색 */
+  color: #ffffff; /* hover 시 텍스트 색상 */
+}
+
+.dark .react-calendar__navigation__arrow:focus,
+.dark .react-calendar__navigation__label:focus {
+  background-color: #334155 !important;/* hover 시 배경색 */
+  color: #ffffff; /* hover 시 텍스트 색상 */
 }
