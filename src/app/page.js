@@ -112,6 +112,8 @@ export default async function Home() {
           memberActivity.tagCounts[tag] = (memberActivity.tagCounts[tag] || 0) + 1;
           monthActivity.tagCounts[tag] = (monthActivity.tagCounts[tag] || 0) + 1;
         });
+
+        const sortedTags = Object.entries(memberActivity.tagCounts).sort((a, b) => b[1] - a[1]);
       }
 
       memberActivity.totalTime += time;
@@ -126,6 +128,8 @@ export default async function Home() {
   const memberData = await fetchMemberData();
   const activityData = await fetchActivityData();
   const processedData = processData(memberData, activityData);
+
+  console.log(processedData);
 
   return (
     <Layout memberData={processedData}>

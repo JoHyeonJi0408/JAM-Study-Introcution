@@ -121,7 +121,6 @@ function MonthPicker({ selectedMonth, setSelectedMonth, uniqueMonths }) {
 
     return (
         <div className="flex flex-col items-center space-y-4 relative dark:text-white">
-            {/* Header Navigation */}
             <div className="flex items-center space-x-4">
                 <button onClick={handlePrevYear} className="px-2 py-1 border rounded">
                     {"<<"}
@@ -142,12 +141,10 @@ function MonthPicker({ selectedMonth, setSelectedMonth, uniqueMonths }) {
                     {">>"}
                 </button>
             </div>
-
-            {/* Calendar Popup */}
             {showCalendar && (
                 <div
                     className="absolute top-full mt-2 bg-white dark:bg-slate-800 border p-4 rounded shadow-lg z-50 {`react-calendar-wrapper ${theme === 'dark' ? 'dark' : ''}`}"
-                    onClick={(e) => e.stopPropagation()} // Prevent event bubbling
+                    onClick={(e) => e.stopPropagation()}
                 >
                     <Calendar
                         value={new Date(Number(year), Number(month) - 1)}
@@ -191,39 +188,48 @@ function MemberCard({ memberName, realName, iconUrl, monthData, selectedMonth })
     };
 
     const getColorClass = (tag) => tagColors[tag] || "bg-gray-200 text-gray-700";
-    const sortedTags = Object.entries(monthData.tagCounts).sort((a, b) => b[1] - a[1]);
 
     return (
         <div className="p-2 lg:w-1/3 md:w-1/2 w-full">
-            <div className="h-full flex flex-col items-center border-gray-200 border p-4 rounded-lg">
-                {iconUrl && (
-                    <img
-                        src={iconUrl}
-                        alt={`${memberName}의 아이콘`}
-                        className="w-16 h-16 mb-4 rounded-full"
-                    />
-                )}
-                <h2 className="text-gray-900 title-font font-medium mb-2">{realName} {memberName}</h2>
-                <div className="flex flex-wrap mt-4">
-                    {sortedTags.map(([tag]) => (
-                        <span
-                            key={tag}
-                            className={`text-sm font-medium px-3 py-1 rounded-full mr-2 mb-2 ${getColorClass(
-                                tag
-                            )}`}
-                        >
-                            {tag}
-                        </span>
-                    ))}
+            <div className="h-full flex flex-col items-start border-gray-200 border p-4 rounded-lg">
+                <div className="flex items-center">
+                    {iconUrl && (
+                        <img
+                            src={iconUrl}
+                            alt={`${memberName}의 아이콘`}
+                            className="w-24 h-24 mr-4 rounded-full"
+                        />
+                    )}
+
+                    <div className="flex flex-col">
+                        <h2 className="text-gray-900 text-lg mb-2">
+                            {realName} {memberName}
+                        </h2>
+
+                        <div className="flex flex-wrap">
+                            {Object.entries(monthData.tagCounts)
+                                .slice(0, 4)
+                                .map(([tag, count]) => (
+                                    <span
+                                        key={tag}
+                                        className={`text-sm font-medium px-3 py-1 rounded-full mr-2 mb-2 ${getColorClass(tag)}`}
+                                    >
+                                        {tag}
+                                    </span>
+                                ))}
+                        </div>
+                    </div>
                 </div>
-                <p className="text-gray-500 mb-2">
-                    📅 {count}일 ⏰ {Math.floor(totalTime)}시간
-                </p>
-                <div className="flex w-full space-x-4 items-start">
+                <div className="flex w-full space-x-4 items-end">
                     <div className="w-1/2 h-40">
                         <PieChart stateCounts={stateCounts} />
                     </div>
                     <div className="w-1/2">
+                        <div className="text-center mb-2">
+                            <p className="text-gray-500">
+                                📅 {count}일 ⏰ {Math.floor(totalTime)}시간
+                            </p>
+                        </div>
                         <MonthGrid
                             selectedMonth={selectedMonth}
                             activityByDate={activityByDate}
@@ -238,15 +244,21 @@ function MemberCard({ memberName, realName, iconUrl, monthData, selectedMonth })
 export default function MainClient({ memberData }) {
     const [data, setData] = useState(null);
     const [selectedMonth, setSelectedMonth] = useState(getCurrentMonth());
+    const [isLoading, setIsLoading] = useState(true);
+    const [showModal, setShowModal] = useState(false);
 
     useEffect(() => {
         if (memberData) {
             setData(memberData);
+            setIsLoading(false);
         }
     }, [memberData]);
 
-    if (!data) {
-        return <div>Loading...</div>;
+    if (isLoading) {
+        return (
+            <div className="loading-circl">
+            </div>
+        );
     }
 
     const uniqueMonths = Array.from(
@@ -257,17 +269,11 @@ export default function MainClient({ memberData }) {
 
     return (
         <section className="text-gray-500 body-font">
-            <div className="container px-5 py-24 mx-auto">
+            <div className="container px-5 py-12 mx-auto">
                 <div className="flex flex-col text-center w-full mb-10">
                     <h1 className="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">
-                        짭알못 활동 기록
+                        <b>짭알못 JAM</b>은 매주 자기계발을 진행하는 모임입니다. <br /> 저희의 활동 기록을 확인해 보세요!
                     </h1>
-                    <p className="lg:w-2/3 mx-auto leading-relaxed text-base">
-                        과거에 '금요일을 알차게 보내는 건 못 참지'라는 금요일마다 자기계발을 하는 모임이 있었습니다.
-                        저희는 그 모임과 별개로 매주 목요일마다 자기계발 모임을 하였습니다.
-                        어느 날 누군가 '짭알못이다!'라고 외친 이후로 그렇게 불리게 되었습니다.
-                        하지만 지금은 우리가 찐 ㅋ😎
-                    </p>
                 </div>
                 <div className="flex justify-end items-center w-full mb-6">
                     <MonthPicker

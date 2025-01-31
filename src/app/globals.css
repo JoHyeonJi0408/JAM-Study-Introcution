@@ -3,7 +3,11 @@
 @tailwind utilities;
 
 .bg-primary {
-  @apply bg-white dark:bg-slate-800
+  @apply bg-gray-100 dark:bg-slate-800
+}
+
+.bg-footer {
+  @apply bg-gray-200 dark:bg-slate-900
 }
 
 select {
@@ -15,25 +19,12 @@ h1, h2, p {
 }
 
 a {
-  @apply text-gray-900 dark:text-white hover:text-gray-500 dark:hover:text-gray-500;
+  @apply text-gray-900 dark:text-white
 }
 
-/*
-slate-100: #f1f5f9
-slate-200: #e2e8f0
-slate-300: #cbd5e1
-slate-400: #94a3b8
-slate-500: #64748b
-slate-600: #475569
-slate-700: #334155
-slate-800: #1e293b
-slate-900: #0f172a
-*/
-
-/* 다크 모드 react-calendar 스타일 */
 .dark .react-calendar {
-  background-color: #1e293b; /* 다크 모드 배경 */
-  color: #fff; /* 기본 글씨 색 */
+  background-color: #1e293b;
+  color: #fff;
 }
 
 .dark .react-calendar__tile:hover {
@@ -43,8 +34,8 @@ slate-900: #0f172a
 
 .dark .react-calendar__year-view .react-calendar__tile:hover,
 .dark .react-calendar__decade-view .react-calendar__tile:hover {
-  background-color: #334155; /* 월 hover 배경 */
-  color: #fff; /* 월 hover 텍스트 */
+  background-color: #334155;
+  color: #fff;
 }
 
 .dark .react-calendar__tile--now {
@@ -53,29 +44,38 @@ slate-900: #0f172a
 }
 
 .dark .react-calendar__tile:disabled {
-  background-color: #334155; /* 기본 배경색 */
-  color: #64748b; /* 비활성화된 텍스트 색상 */
+  background-color: #334155;
+  color: #64748b;
 }
 
 .dark .react-calendar__tile:disabled:hover {
-  background-color: #334155; /* hover 시 배경색 */
-  color: #64748b; /* hover 시 텍스트 색상 */
+  background-color: #334155;
+  color: #64748b;
 }
 
 .dark .react-calendar__navigation__arrow,
 .dark .react-calendar__navigation__label {
-  background-color: #1e293b; /* 버튼 기본 배경색 */
+  background-color: #1e293b;
   color: #ffffff;
 }
 
 .dark .react-calendar__navigation__arrow:hover,
 .dark .react-calendar__navigation__label:hover {
-  background-color: #334155 !important;/* hover 시 배경색 */
-  color: #ffffff; /* hover 시 텍스트 색상 */
+  background-color: #334155 !important;
+  color: #ffffff;
 }
 
 .dark .react-calendar__navigation__arrow:focus,
 .dark .react-calendar__navigation__label:focus {
-  background-color: #334155 !important;/* hover 시 배경색 */
-  color: #ffffff; /* hover 시 텍스트 색상 */
+  background-color: #334155 !important;
+  color: #ffffff;
+}
+
+.loading-circle {
+  border: 8px solid #f3f3f3;
+  border-top: 8px solid #3498db;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 2s linear infinite;
 }
