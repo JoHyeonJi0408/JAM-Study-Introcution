@@ -16,9 +16,16 @@ export default async function Home() {
       return response.results.map((page) => ({
         memberId: page.id,
         memberName: page.properties["이름"]?.title[0]?.text?.content || "Unknown",
+        realName: page.properties["본명"]?.rich_text[0]?.text?.content || "Unknown",
         goal: page.properties["목표"]?.select?.name || "Unknown",
         position: page.properties["직책"]?.select?.name || "Unknown",
+        firstDate: page.properties["첫 참여일"]?.date?.start || null,
+        portfolio: page.properties["포폴"]?.url || null,
+        gitHub: page.properties["깃헙"]?.url || null,
+        blog: page.properties["블로그"]?.url || null,
         iconUrl: page.icon?.external?.url || null,
+        imageUrl: page.properties["이미지"]?.files[0]?.file?.url || null,
+        introduction: page.properties["소개"]?.rich_text[0]?.text?.content || "None",
       }));
     } catch (error) {
       console.error("Failed to fetch member data:", error);
@@ -43,8 +50,9 @@ export default async function Home() {
           ...response.results.map((page) => ({
             memberId: page.properties["멤버 DB"]?.relation[0]?.id || null,
             time: page.properties["시간"]?.number || 0,
-            state: page.properties["상태"]?.select?.name || "좋음",
+            state: page.properties["상태"]?.select?.name || "None",
             rollupDate: page.properties["날짜"]?.rollup?.array[0]?.date?.start || null,
+            tags: page.properties["활동 유형"]?.multi_select.map((tag) => tag.name) || [],
           })),
         ];
 
@@ -62,7 +70,7 @@ export default async function Home() {
     const memberMap = Object.fromEntries(members.map((m) => [m.memberId, m]));
     const activitySummary = {};
 
-    activities.forEach(({ memberId, time, state, rollupDate }) => {
+    activities.forEach(({ memberId, time, state, rollupDate, tags }) => {
       if (!rollupDate || !memberMap[memberId]) return;
 
       const date = new Date(rollupDate);
@@ -72,7 +80,11 @@ export default async function Home() {
       const monthKey = `${year}년 ${String(month).padStart(2, "0")}월`;
 
       if (!activitySummary[memberId]) {
-        activitySummary[memberId] = { activityByMonth: {}, totalTime: 0 };
+        activitySummary[memberId] = { 
+          activityByMonth: {}, 
+          totalTime: 0,
+          tagCounts: {},
+        };
       }
 
       const memberActivity = activitySummary[memberId];
@@ -82,6 +94,7 @@ export default async function Home() {
           count: 0,
           stateCounts: { 좋음: 0, 보통: 0, 나쁨: 0 },
           activityByDate: {},
+          tagCounts: {},
         };
       }
 
@@ -93,6 +106,15 @@ export default async function Home() {
         time: (monthActivity.activityByDate[day]?.time || 0) + time,
         state,
       };
+
+      if (tags && tags.length > 0) {
+        tags.forEach((tag) => {
+          memberActivity.tagCounts[tag] = (memberActivity.tagCounts[tag] || 0) + 1;
+          monthActivity.tagCounts[tag] = (monthActivity.tagCounts[tag] || 0) + 1;
+        });
+
+        const sortedTags = Object.entries(memberActivity.tagCounts).sort((a, b) => b[1] - a[1]);
+      }
 
       memberActivity.totalTime += time;
     });
@@ -106,6 +128,8 @@ export default async function Home() {
   const memberData = await fetchMemberData();
   const activityData = await fetchActivityData();
   const processedData = processData(memberData, activityData);
+
+  console.log(processedData);
 
   return (
     <Layout memberData={processedData}>

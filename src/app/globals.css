@@ -3,7 +3,11 @@
 @tailwind utilities;
 
 .bg-primary {
-  @apply bg-white dark:bg-slate-800
+  @apply bg-gray-100 dark:bg-slate-800
+}
+
+.bg-footer {
+  @apply bg-gray-200 dark:bg-slate-900
 }
 
 select {
@@ -15,5 +19,63 @@ h1, h2, p {
 }
 
 a {
-  @apply text-gray-900 dark:text-white hover:text-gray-500 dark:hover:text-gray-500;
+  @apply text-gray-900 dark:text-white
+}
+
+.dark .react-calendar {
+  background-color: #1e293b;
+  color: #fff;
+}
+
+.dark .react-calendar__tile:hover {
+  background-color: #334155;
+  color: #fff;
+}
+
+.dark .react-calendar__year-view .react-calendar__tile:hover,
+.dark .react-calendar__decade-view .react-calendar__tile:hover {
+  background-color: #334155;
+  color: #fff;
+}
+
+.dark .react-calendar__tile--now {
+  background-color: #ffae00;
+  color: #ffffff;
+}
+
+.dark .react-calendar__tile:disabled {
+  background-color: #334155;
+  color: #64748b;
+}
+
+.dark .react-calendar__tile:disabled:hover {
+  background-color: #334155;
+  color: #64748b;
+}
+
+.dark .react-calendar__navigation__arrow,
+.dark .react-calendar__navigation__label {
+  background-color: #1e293b;
+  color: #ffffff;
+}
+
+.dark .react-calendar__navigation__arrow:hover,
+.dark .react-calendar__navigation__label:hover {
+  background-color: #334155 !important;
+  color: #ffffff;
+}
+
+.dark .react-calendar__navigation__arrow:focus,
+.dark .react-calendar__navigation__label:focus {
+  background-color: #334155 !important;
+  color: #ffffff;
+}
+
+.loading-circle {
+  border: 8px solid #f3f3f3;
+  border-top: 8px solid #3498db;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 2s linear infinite;
 }
