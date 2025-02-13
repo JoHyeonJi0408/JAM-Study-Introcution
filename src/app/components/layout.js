@@ -16,9 +16,9 @@ export default function Layout({ children, memberData }) {
   }, [memberData, setMemberData]);
 
   return (
-    <div className="bg-primary">
+    <div className="min-h-screen flex flex-col bg-primary">
       <Header memberData={memberData} />
-      <div className="main-content">
+      <div className="flex-grow">
         {children}
       </div>
       <Footer />
