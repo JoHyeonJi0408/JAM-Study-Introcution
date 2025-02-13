@@ -5,10 +5,10 @@ import MainClient from "./components/main-client";
 export default async function Home() {
   const { Client } = require("@notionhq/client");
 
-  const notion = new Client({ auth: "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" });
+  const notion = new Client({ auth: process.env.NOTION_TOKEN });
 
-  const memberDatabaseId = "6167860f2e3747cb98495bc70ec6563f";
-  const activityDatabaseId = "2e10e0944c774ff69baebd6aadf57d21";
+  const memberDatabaseId = process.env.NOTION_DATABASE_MBMBER_ID;
+  const activityDatabaseId = process.env.NOTION_DATABASE_ACTIVITY_ID;
 
   const fetchMemberData = async () => {
     try {
