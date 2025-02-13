@@ -17,15 +17,15 @@ export default async function Home() {
         memberId: page.id,
         memberName: page.properties["이름"]?.title[0]?.text?.content || "Unknown",
         realName: page.properties["본명"]?.rich_text[0]?.text?.content || "Unknown",
-        goal: page.properties["목표"]?.select?.name || "Unknown",
-        position: page.properties["직책"]?.select?.name || "Unknown",
+        goal: page.properties["목표"]?.select?.name || null,
+        position: page.properties["직책"]?.select?.name || null,
         firstDate: page.properties["첫 참여일"]?.date?.start || null,
         portfolio: page.properties["포폴"]?.url || null,
         gitHub: page.properties["깃헙"]?.url || null,
         blog: page.properties["블로그"]?.url || null,
         iconUrl: page.icon?.external?.url || null,
         imageUrl: page.properties["이미지"]?.files[0]?.file?.url || null,
-        introduction: page.properties["소개"]?.rich_text[0]?.text?.content || "None",
+        introduction: page.properties["소개"]?.rich_text[0]?.text?.content || null,
       }));
     } catch (error) {
       console.error("Failed to fetch member data:", error);

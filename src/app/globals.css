@@ -22,6 +22,10 @@ a {
   @apply text-gray-900 dark:text-white
 }
 
+a.text-blue-500 {
+  @apply dark:text-blue-300;
+}
+
 .dark .react-calendar {
   background-color: #1e293b;
   color: #fff;
