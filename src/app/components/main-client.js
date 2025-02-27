@@ -320,7 +320,7 @@ export default function MainClient({ memberData }) {
                                             {portfolio && (
                                                 <a
                                                     href={portfolio}
-                                                    className="flex items-center px-4 py-2 bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition"
+                                                    className="flex items-center px-4 py-2 bg-rose-400 dark:bg-rose-300 text-white dark:text-zinc-900 rounded-xl hover:bg-rose-500 transition"
                                                 >
                                                     💼 <span className="ml-2"><b>포트폴리오</b></span>
                                                 </a>
@@ -328,7 +328,7 @@ export default function MainClient({ memberData }) {
                                             {blog && (
                                                 <a
                                                     href={blog}
-                                                    className="flex items-center px-4 py-2 bg-green-500 text-white rounded-xl hover:bg-green-600 transition"
+                                                    className="flex items-center px-4 py-2 bg-lime-400 dark:bg-lime-300 text-white dark:text-zinc-900 rounded-xl hover:bg-lime-500 transition"
                                                 >
                                                     ✏️ <span className="ml-2"><b>블로그</b></span>
                                                 </a>
@@ -336,7 +336,7 @@ export default function MainClient({ memberData }) {
                                             {gitHub && (
                                                 <a
                                                     href={gitHub}
-                                                    className="flex items-center px-4 py-2 bg-gray-800 text-white rounded-xl hover:bg-gray-900 transition"
+                                                    className="flex items-center px-4 py-2 bg-sky-400 dark:bg-sky-300 text-white dark:text-zinc-900 rounded-xl hover:bg-sky-500 transition"
                                                 >
                                                     🐙 <span className="ml-2"><b>GitHub</b></span>
                                                 </a>
