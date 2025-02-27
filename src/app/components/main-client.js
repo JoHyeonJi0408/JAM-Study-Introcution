@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import PieChart from "../charts/pie";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
+import { FiMoreVertical } from "react-icons/fi";
 
 function getCurrentMonth() {
     const today = new Date();
@@ -122,22 +123,22 @@ function MonthPicker({ selectedMonth, setSelectedMonth, uniqueMonths }) {
     return (
         <div className="flex flex-col items-center space-y-4 relative dark:text-white">
             <div className="flex items-center space-x-4">
-                <button onClick={handlePrevYear} className="px-2 py-1 border rounded">
+                <button onClick={handlePrevYear} className="px-2 py-1 bg-white dark:bg-gray-900 shadow-md p-4 rounded transition duration-200">
                     {"<<"}
                 </button>
-                <button onClick={handlePrevMonth} className="px-2 py-1 border rounded">
+                <button onClick={handlePrevMonth} className="px-2 py-1 bg-white dark:bg-gray-900 shadow-md p-4 rounded transition duration-200">
                     {"<"}
                 </button>
                 <span
                     onClick={() => setShowCalendar(true)}
-                    className="cursor-pointer px-4 py-2 border rounded"
+                    className="cursor-pointer px-4 py-2 bg-white dark:bg-gray-900 shadow-md p-4 rounded transition duration-200"
                 >
                     {selectedMonth}
                 </span>
-                <button onClick={handleNextMonth} className="px-2 py-1 border rounded">
+                <button onClick={handleNextMonth} className="px-2 py-1 bg-white dark:bg-gray-900 shadow-md p-4 rounded transition duration-200">
                     {">"}
                 </button>
-                <button onClick={handleNextYear} className="px-2 py-1 border rounded">
+                <button onClick={handleNextYear} className="px-2 py-1 bg-white dark:bg-gray-900 shadow-md p-4 rounded transition duration-200">
                     {">>"}
                 </button>
             </div>
@@ -173,7 +174,7 @@ function MonthPicker({ selectedMonth, setSelectedMonth, uniqueMonths }) {
     );
 }
 
-function MemberCard({ memberName, realName, iconUrl, monthData, selectedMonth }) {
+function MemberCard({ memberName, realName, imageUrl, iconUrl, monthData, selectedMonth, onShowModal }) {
     const { totalTime, count, stateCounts } = monthData;
     const activityByDate = monthData.activityByDate;
 
@@ -191,24 +192,24 @@ function MemberCard({ memberName, realName, iconUrl, monthData, selectedMonth })
 
     return (
         <div className="p-2 lg:w-1/3 md:w-1/2 w-full">
-            <div className="h-full flex flex-col items-start border-gray-200 border p-4 rounded-lg">
+            <div className="h-full flex flex-col items-start bg-white dark:bg-gray-900 shadow-md p-4 rounded-lg transition duration-200 relative">
+                <button className="absolute top-2 right-2 p-1 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700" onClick={() => onShowModal(memberName)}>
+                    <FiMoreVertical size={20} />
+                </button>
                 <div className="flex items-center">
                     {iconUrl && (
                         <img
-                            src={iconUrl}
+                            src={imageUrl || iconUrl}
                             alt={`${memberName}의 아이콘`}
                             className="w-24 h-24 mr-4 rounded-full"
                         />
                     )}
-
                     <div className="flex flex-col">
                         <h2 className="text-gray-900 text-lg mb-2">
                             {realName} {memberName}
                         </h2>
-
                         <div className="flex flex-wrap">
                             {Object.entries(monthData.tagCounts)
-                                .slice(0, 4)
                                 .map(([tag, count]) => (
                                     <span
                                         key={tag}
@@ -245,7 +246,7 @@ export default function MainClient({ memberData }) {
     const [data, setData] = useState(null);
     const [selectedMonth, setSelectedMonth] = useState(getCurrentMonth());
     const [isLoading, setIsLoading] = useState(true);
-    const [showModal, setShowModal] = useState(false);
+    const [selectedMember, setSelectedMember] = useState(null);
 
     useEffect(() => {
         if (memberData) {
@@ -256,7 +257,8 @@ export default function MainClient({ memberData }) {
 
     if (isLoading) {
         return (
-            <div className="loading-circl">
+            <div className="flex justify-center items-center h-screen">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-blue-500"></div>
             </div>
         );
     }
@@ -268,13 +270,8 @@ export default function MainClient({ memberData }) {
     ).sort();
 
     return (
-        <section className="text-gray-500 body-font">
+        <section>
             <div className="container px-5 py-12 mx-auto">
-                <div className="flex flex-col text-center w-full mb-10">
-                    <h1 className="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">
-                        <b>짭알못 JAM</b>은 매주 자기계발을 진행하는 모임입니다. <br /> 저희의 활동 기록을 확인해 보세요!
-                    </h1>
-                </div>
                 <div className="flex justify-end items-center w-full mb-6">
                     <MonthPicker
                         selectedMonth={selectedMonth}
@@ -283,7 +280,7 @@ export default function MainClient({ memberData }) {
                     />
                 </div>
                 <div className="flex flex-wrap -m-2">
-                    {data.map(({ memberName, realName, iconUrl, activityByMonth }) => {
+                    {data.map(({ memberName, realName, iconUrl, imageUrl, activityByMonth }) => {
                         const monthData = activityByMonth[selectedMonth];
                         if (!monthData) return null;
                         return (
@@ -291,14 +288,68 @@ export default function MainClient({ memberData }) {
                                 key={memberName}
                                 memberName={memberName}
                                 realName={realName}
+                                imageUrl={imageUrl}
                                 iconUrl={iconUrl}
                                 monthData={monthData}
                                 selectedMonth={selectedMonth}
+                                onShowModal={setSelectedMember}
                             />
                         );
                     })}
                 </div>
             </div>
+            {selectedMember && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50" onClick={() => setSelectedMember(null)}>
+                    <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg w-[30rem] relative" onClick={(e) => e.stopPropagation()}>
+                        <button onClick={() => setSelectedMember(null)} className="absolute top-2 right-2 text-gray-500 hover:text-gray-700">
+                            ❌
+                        </button>
+                        {data.map(({ memberName, realName, iconUrl, imageUrl, introduction, goal, position, firstDate, totalTime, portfolio, blog, gitHub }) => {
+                            if (memberName !== selectedMember) return null;
+                            return (
+                                <div key={memberName} className="flex flex-col items-center">
+                                    <img src={imageUrl || iconUrl} alt={`프로필 이미지`} className="w-16 h-16 rounded-full mb-4 border border-gray-300 dark:border-gray-700" />
+                                    <h2 className="text-lg font-bold mb-2">{realName} ({memberName})</h2>
+                                    <p className="text-gray-600 dark:text-gray-300 text-center mb-4">{introduction || ""}</p>
+                                    <div className="w-full border-t pt-4">
+                                        <p className="text-sm text-gray-500 dark:text-gray-400">🚩 <b>목표</b> : {goal || "설정된 목표 없음"}</p>
+                                        <p className="text-sm text-gray-500 dark:text-gray-400">🚀 <b>직책</b> : {position || "설정된 직책 없음"}</p>
+                                        <p className="text-sm text-gray-500 dark:text-gray-400">📅 <b>첫 참여일</b> : {firstDate}</p>
+                                        <p className="text-sm text-gray-500 dark:text-gray-400">⏰ <b>총 활동 시간</b> : {Math.floor(totalTime)}시간</p>
+                                        <div className="flex space-x-2 mt-4">
+                                            {portfolio && (
+                                                <a
+                                                    href={portfolio}
+                                                    className="flex items-center px-4 py-2 bg-rose-400 dark:bg-rose-300 text-white dark:text-zinc-900 rounded-xl hover:bg-rose-500 transition"
+                                                >
+                                                    💼 <span className="ml-2"><b>포트폴리오</b></span>
+                                                </a>
+                                            )}
+                                            {blog && (
+                                                <a
+                                                    href={blog}
+                                                    className="flex items-center px-4 py-2 bg-lime-400 dark:bg-lime-300 text-white dark:text-zinc-900 rounded-xl hover:bg-lime-500 transition"
+                                                >
+                                                    ✏️ <span className="ml-2"><b>블로그</b></span>
+                                                </a>
+                                            )}
+                                            {gitHub && (
+                                                <a
+                                                    href={gitHub}
+                                                    className="flex items-center px-4 py-2 bg-sky-400 dark:bg-sky-300 text-white dark:text-zinc-900 rounded-xl hover:bg-sky-500 transition"
+                                                >
+                                                    🐙 <span className="ml-2"><b>GitHub</b></span>
+                                                </a>
+                                            )}
+                                        </div>
+
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+            )}
         </section>
     );
 }
