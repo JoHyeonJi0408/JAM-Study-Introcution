@@ -27,8 +27,15 @@ export default function Home() {
   return (
     <Layout memberData={memberData}>
       {loading ? (
-        <div className="flex justify-center items-center h-40">
-          <div className="w-8 h-8 border-4 border-gray-300 border-t-gray-900 rounded-full animate-spin"></div>
+        <div className="flex flex-col justify-center items-center h-40 space-y-2">
+          <div className="text-lg font-bold bg-gradient-to-r from-pink-500 to-yellow-500 bg-clip-text text-transparent animate-rainbow">
+            불러오는 중... ✨
+          </div>
+          <div class="max-w-sm mx-auto p-4">
+            <div class="w-24 h-24 bg-gray-300 rounded-full mx-auto animate-pulse mb-4"></div>
+            <div class="h-4 bg-gray-300 rounded w-2/3 mx-auto animate-pulse mb-2"></div>
+            <div class="h-3 bg-gray-300 rounded w-1/2 mx-auto animate-pulse"></div>
+          </div>
         </div>
       ) : (
         <MainClient memberData={memberData} />
