@@ -16,7 +16,7 @@
 
 <br>
 
-### 🚀 주요 기능
+### 🚀 수행 업무
 ![스크린샷 2025-03-08 142137](https://github.com/user-attachments/assets/996cb5a4-08c0-4825-8f5b-d08acf45dfed)
 #### AI 활용
 #### 클라이언트
